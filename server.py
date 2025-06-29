@@ -20,15 +20,14 @@ mcp = FastMCP(
     instructions="You are a helpful assistant that can provide cat facts, code review capabilities, implementation planning for AI agents, and pull request generation."
 )
 
+MATTER_API_ENDPOINT = os.environ.get('MATTER_API_ENDPOINT', 'http://localhost:4064')
 def call_matter_ai(matter_api_key: str, type: str, meta: dict):
     
     response = requests.post(
-        f'http://localhost:4064/mcp/{type}', 
+        f'{MATTER_API_ENDPOINT}/mcp/{type}', 
         headers={"Authorization": f"Bearer {matter_api_key}"}, 
         json=meta
     )
-    
-    return response
 
 def get_matter_ai_key(ctx: Context) -> str:
     # Check if initialization is complete using thread-safe approach
@@ -81,18 +80,18 @@ git_owner: Annotated[str, Field(description="The owner of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the repository.")],
 git_branch: Annotated[str, Field(description="The branch of the repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
-languages: Annotated[str, Field(description="The languages of the code.")],
+languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
     """
     Returns the reviewed code as a string.
     If you are asked for the code review, call this function.
     Args:
         generated_code: The generated code to be reviewed.
-        git_owner: The owner of the repository (example gravitycloudai).
+        git_owner: The owner of the repository (example GravityCloudAI).
         git_repo: The name of the repository (example matter-ai-mcp).
         git_branch: The branch of the repository (example main, master, etc).
         git_user: The current git user (example code-crusher).
-        languages: The programming languages of the code (example JavaScript, Python, Java, etc).
+        languages: The list of programming languages of the code (example ["JavaScript", "Python", "Java", etc]).
     Returns:
         The reviewed code.
     """
@@ -110,18 +109,19 @@ git_owner: Annotated[str, Field(description="The owner of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the repository.")],
 git_branch: Annotated[str, Field(description="The branch of the repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
+languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
     """
     Returns the reviewed code as a string.
     If you are asked for the full code review OR complete code review OR review all the code, call this function. First perform a git --no-pager diff -U2 to get the unified diff output. Then send the complete unified diff output to this tool under the git_diff parameter. When running the tool, make sure to inform you are using MatterAI.
     
     Args:
-        git_diff (str): The unified output of "git --no-pager diff -U2" to be reviewed.
-        git_owner (str): The owner of the repository.
-        git_repo (str): The name of the repository.
-        git_branch (str): The branch of the repository.
-        git_user (str): The current git user.
-        ctx (Context): The context object for the MCP tool execution.
+        generated_code: The generated code to be reviewed.
+        git_owner: The owner of the repository (example GravityCloudAI).
+        git_repo: The name of the repository (example matter-ai-mcp).
+        git_branch: The branch of the repository (example main, master, etc).
+        git_user: The current git user (example code-crusher).
+        languages: The list of programming languages of the code (example ["JavaScript", "Python", "Java", etc]).
     
     Returns:
         str: The reviewed code.
