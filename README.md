@@ -64,7 +64,7 @@ Create an MCP configuration file with the following content:
       "args": [
         "-y",
         "mcp-remote",
-        "https://mcplocal.matterai.dev/sse",
+        "https://mcp.matterai.so/sse",
         "--header",
         "Authorization: Bearer MATTER_AI_API_KEY"
       ]
