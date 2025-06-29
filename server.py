@@ -17,7 +17,7 @@ initialization_complete = False
 # Create the FastMCP instance
 mcp = FastMCP(
     name="Matter AI MCP",
-    instructions="You are a helpful assistant that can provide information about the current date and time, as well as cat facts."
+    instructions="You are a helpful assistant that can provide cat facts, code review capabilities, implementation planning for AI agents, and pull request generation."
 )
 
 def call_matter_ai(matter_api_key: str, type: str, meta: dict):
