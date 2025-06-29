@@ -8,6 +8,7 @@ import time
 import threading
 from typing import Annotated
 from pydantic import Field
+import os
 
 # Create a global lock for initialization
 init_lock = threading.Lock()
