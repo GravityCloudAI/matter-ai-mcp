@@ -199,6 +199,6 @@ if __name__ == "__main__":
         init_thread.start()
         
         # Run the server
-        mcp.run(transport="sse", host="127.0.0.1", port=9000)
+        mcp.run(transport="sse", host="0.0.0.0", port=9000)
     except Exception as e:
         print(f"Error starting server: {str(e)}")
