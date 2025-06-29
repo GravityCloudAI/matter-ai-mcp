@@ -54,7 +54,12 @@ jobs:
 
       - name: Get Version
         id: package-version
-        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        run: |
+          # Install toml parser
+          pip install tomli
+          # Extract version from pyproject.toml
+          VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker Image
         uses: docker/build-push-action@v5
