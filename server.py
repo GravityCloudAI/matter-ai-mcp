@@ -32,7 +32,6 @@ def call_matter_ai(matter_api_key: str, type: str, meta: dict):
 
 def get_matter_ai_key(ctx: Context) -> str:
     # Check if initialization is complete using thread-safe approach
-    global initialization_complete
     with init_lock:
         if not initialization_complete:
             raise Exception("Received request before initialization was complete")
@@ -105,7 +104,7 @@ ctx: Context) -> str:
         return f"Error: {str(e)}"
 
 @mcp.tool()
-def codereview_full(git_diff: Annotated[str, Field(description="The unified diff output of 'git --no-pager diff -U2' to be reviewed.")],
+def codereview_full(generated_code: Annotated[str, Field(description="The unified diff output of 'git --no-pager diff -U2' to be reviewed.")],
 git_owner: Annotated[str, Field(description="The owner of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the repository.")],
 git_branch: Annotated[str, Field(description="The branch of the repository.")],
@@ -174,7 +173,6 @@ def cat_fact() -> str:
         A random cat fact.
     """
     # Check if initialization is complete
-    global initialization_complete
     with init_lock:
         if not initialization_complete:
             raise Exception("Received request before initialization was complete")
