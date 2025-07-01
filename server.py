@@ -29,6 +29,7 @@ def call_matter_ai(matter_api_key: str, type: str, meta: dict):
         headers={"Authorization": f"Bearer {matter_api_key}"}, 
         json=meta
     )
+    return response
 
 def get_matter_ai_key(ctx: Context) -> str:
     # Check if initialization is complete using thread-safe approach
@@ -37,7 +38,10 @@ def get_matter_ai_key(ctx: Context) -> str:
             raise Exception("Received request before initialization was complete")
         
     http_request = ctx.get_http_request()
-    auth_header = http_request.headers.get("Authorization")
+
+    print("Headers received:", http_request.headers)
+
+    auth_header = http_request.headers.get("X-AUTH-TOKEN")
 
     if not auth_header or not auth_header.lower().startswith("bearer "):
         raise Exception("Missing or invalid Authorization header. Expected: Bearer <token>")
@@ -48,7 +52,7 @@ def get_matter_ai_key(ctx: Context) -> str:
 
 # @mcp.tool()
 # def cortex_plan(query: Annotated[str, Field(description="The query to be answered")],
-# git_owner: Annotated[str, Field(description="The owner of the repository.")],
+# git_org: Annotated[str, Field(description="The owner of the repository.")],
 # git_repo: Annotated[str, Field(description="The name of the repository.")],
 # git_branch: Annotated[str, Field(description="The branch of the repository.")],
 # ctx: Context) -> str:
@@ -57,7 +61,7 @@ def get_matter_ai_key(ctx: Context) -> str:
 #     If you are asked to generate a plan OR cortex plan, call this function.
 #     Args:
 #         query: The query to be answered.
-#         git_owner: The owner of the repository.
+#         git_org: The owner of the repository.
 #         git_repo: The name of the repository.
 #         git_branch: The branch of the repository.
 #     Returns:
@@ -76,7 +80,7 @@ def get_matter_ai_key(ctx: Context) -> str:
 
 @mcp.tool()
 def codereview(generated_code: Annotated[str, Field(description="The generated code to be reviewed.")],
-git_owner: Annotated[str, Field(description="The owner of the repository.")],
+git_org: Annotated[str, Field(description="The organization of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the repository.")],
 git_branch: Annotated[str, Field(description="The branch of the repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
@@ -87,7 +91,7 @@ ctx: Context) -> str:
     If you are asked for the code review, call this function.
     Args:
         generated_code: The generated code to be reviewed.
-        git_owner: The owner of the repository (example GravityCloudAI).
+        git_org: The organization of the repository (example GravityCloudAI).
         git_repo: The name of the repository (example matter-ai-mcp).
         git_branch: The branch of the repository (example main, master, etc).
         git_user: The current git user (example code-crusher).
@@ -98,14 +102,14 @@ ctx: Context) -> str:
     
     try:
         matter_api_key = get_matter_ai_key(ctx)
-        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_owner, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
+        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
         return response.json()
     except Exception as e:
         return f"Error: {str(e)}"
 
 @mcp.tool()
 def codereview_full(generated_code: Annotated[str, Field(description="The unified diff output of 'git --no-pager diff -U2' to be reviewed.")],
-git_owner: Annotated[str, Field(description="The owner of the repository.")],
+git_org: Annotated[str, Field(description="The organization of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the repository.")],
 git_branch: Annotated[str, Field(description="The branch of the repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
@@ -117,7 +121,7 @@ ctx: Context) -> str:
     
     Args:
         generated_code: The generated code to be reviewed.
-        git_owner: The owner of the repository (example GravityCloudAI).
+        git_org: The organization of the repository (example GravityCloudAI).
         git_repo: The name of the repository (example matter-ai-mcp).
         git_branch: The branch of the repository (example main, master, etc).
         git_user: The current git user (example code-crusher).
@@ -129,38 +133,38 @@ ctx: Context) -> str:
     
     try:
         matter_api_key = get_matter_ai_key(ctx)
-        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_owner, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
+        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
         return response.json()
     except Exception as e:
         return f"Error: {str(e)}"
 
-@mcp.tool()
-def generate_pull_request(
-    source_branch: Annotated[str, Field(description="The branch you want to merge from.")],
-    current_branch: Annotated[str, Field(description="The branch you want to merge into.")],
-    git_owner: Annotated[str, Field(description="The owner of the repository.")],
-    git_repo: Annotated[str, Field(description="The name of the repository.")],
-    git_branch: Annotated[str, Field(description="The branch of the repository.")],
-    git_user: Annotated[str, Field(description="The current git user.")],
-    ctx: Context
-) -> str:
-    """
-    Creates a pull request from source_branch into current_branch with auto generated title and description. You will use "gh pr create --title <title> --body <description>" command to do the same (title and description are generated and returned by the tool), if not installed then install the gh cli first. If you are asked to generate a pull request, call this function.
-    Args:
-        source_branch: The branch you want to merge from.
-        current_branch: The branch you want to merge into.
-        git_owner: The owner of the repository.
-        git_repo: The name of the repository.
-        git_branch: The branch of the repository.
-        git_user: The current git user.
-        ctx: The context object for the MCP tool execution.
-    Returns:
-        dict: An object with auto-generated 'title' and 'description' for the pull request.
-    """
-    title = f"Merge {source_branch} into {current_branch}"
-    description = f"This PR merges changes from {source_branch} into {current_branch}."
-    print(f"Creating PR from {source_branch} to {current_branch} with title '{title}' and description '{description}'")
-    return {"title": title, "description": description}
+# @mcp.tool()
+# def generate_pull_request(
+#     source_branch: Annotated[str, Field(description="The branch you want to merge from.")],
+#     current_branch: Annotated[str, Field(description="The branch you want to merge into.")],
+#     git_org: Annotated[str, Field(description="The owner of the repository.")],
+#     git_repo: Annotated[str, Field(description="The name of the repository.")],
+#     git_branch: Annotated[str, Field(description="The branch of the repository.")],
+#     git_user: Annotated[str, Field(description="The current git user.")],
+#     ctx: Context
+# ) -> str:
+#     """
+#     Creates a pull request from source_branch into current_branch with auto generated title and description. You will use "gh pr create --title <title> --body <description>" command to do the same (title and description are generated and returned by the tool), if not installed then install the gh cli first. If you are asked to generate a pull request, call this function.
+#     Args:
+#         source_branch: The branch you want to merge from.
+#         current_branch: The branch you want to merge into.
+#         git_org: The owner of the repository.
+#         git_repo: The name of the repository.
+#         git_branch: The branch of the repository.
+#         git_user: The current git user.
+#         ctx: The context object for the MCP tool execution.
+#     Returns:
+#         dict: An object with auto-generated 'title' and 'description' for the pull request.
+#     """
+#     title = f"Merge {source_branch} into {current_branch}"
+#     description = f"This PR merges changes from {source_branch} into {current_branch}."
+#     print(f"Creating PR from {source_branch} to {current_branch} with title '{title}' and description '{description}'")
+#     return {"title": title, "description": description}
 
 @mcp.tool()
 def cat_fact() -> str:
