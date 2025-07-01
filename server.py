@@ -80,9 +80,9 @@ def get_matter_ai_key(ctx: Context) -> str:
 
 @mcp.tool()
 def codereview(generated_code: Annotated[str, Field(description="The generated code to be reviewed.")],
-git_org: Annotated[str, Field(description="The organization of the repository.")],
-git_repo: Annotated[str, Field(description="The name of the repository.")],
-git_branch: Annotated[str, Field(description="The branch of the repository.")],
+git_org: Annotated[str, Field(description="The git organization of the repository.")],
+git_repo: Annotated[str, Field(description="The name of the git repository.")],
+git_branch: Annotated[str, Field(description="The branch of the git repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
 languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
@@ -91,9 +91,9 @@ ctx: Context) -> str:
     If you are asked for the code review, call this function.
     Args:
         generated_code: The generated code to be reviewed.
-        git_org: The organization of the repository (example GravityCloudAI).
-        git_repo: The name of the repository (example matter-ai-mcp).
-        git_branch: The branch of the repository (example main, master, etc).
+        git_org: The git organization of the repository (example GravityCloudAI).
+        git_repo: The name of the git repository (example matter-ai-mcp).
+        git_branch: The branch of the git repository (example main, master, etc).
         git_user: The current git user (example code-crusher).
         languages: The list of programming languages of the code (example ["JavaScript", "Python", "Java", etc]).
     Returns:
@@ -109,9 +109,9 @@ ctx: Context) -> str:
 
 @mcp.tool()
 def codereview_full(generated_code: Annotated[str, Field(description="The unified diff output of 'git --no-pager diff -U2' to be reviewed.")],
-git_org: Annotated[str, Field(description="The organization of the repository.")],
-git_repo: Annotated[str, Field(description="The name of the repository.")],
-git_branch: Annotated[str, Field(description="The branch of the repository.")],
+git_org: Annotated[str, Field(description="The git organization of the repository.")],
+git_repo: Annotated[str, Field(description="The name of the git repository.")],
+git_branch: Annotated[str, Field(description="The branch of the git repository.")],
 git_user: Annotated[str, Field(description="The current git user.")],
 languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
@@ -121,9 +121,9 @@ ctx: Context) -> str:
     
     Args:
         generated_code: The generated code to be reviewed.
-        git_org: The organization of the repository (example GravityCloudAI).
-        git_repo: The name of the repository (example matter-ai-mcp).
-        git_branch: The branch of the repository (example main, master, etc).
+        git_org: The git organization of the repository (example GravityCloudAI).
+        git_repo: The name of the git repository (example matter-ai-mcp).
+        git_branch: The branch of the git repository (example main, master, etc).
         git_user: The current git user (example code-crusher).
         languages: The list of programming languages of the code (example ["JavaScript", "Python", "Java", etc]).
     
