@@ -66,7 +66,7 @@ Create an MCP configuration file with the following content:
         "mcp-remote",
         "https://mcp.matterai.so/sse",
         "--header",
-        "X-AUTH-TOKEN: Bearer MATTER_AI_API_KEY"
+        "X-AUTH-TOKEN:MATTER_AI_API_KEY"
       ]
     }
   }
