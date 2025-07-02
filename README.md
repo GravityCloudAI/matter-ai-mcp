@@ -29,7 +29,7 @@
 
 # Matter AI MCP Server
 
-A powerful MCP (Model Context Protocol) server for Cursor, Windsurf, and other AI clients that enhances your development workflow. Built with [FastMCP](https://github.com/modelcontextprotocol/fastmcp) in Python, it provides advanced code review capabilities, implementation planning, and pull request generation to help you release code with confidence.
+MatterAI MCP offers code reviews right in your IDE when using AI Agents such as in Cursor, Windsurf, VS Code, Cline and more to enhances your development workflow. Built with [FastMCP](https://github.com/modelcontextprotocol/fastmcp) in Python, it provides advanced code review capabilities, implementation planning, and pull request generation to help you release code with confidence.
 
 ## Features
 - **Code review tools** - Get comprehensive code reviews for individual files or full git diffs
@@ -88,20 +88,19 @@ The server will start on `http://localhost:9000` (default for FastMCP).
 - Tools will auto-discover and appear in the client
 
 ## Tools
-### 1. `cat_fact() -> str`
-Returns a random cat fact.
 
-### 2. `codereview(generated_code: str, git_owner: str, git_repo: str, git_branch: str, git_user: str, languages: str) -> str`
+### 1. Code Review
+`codereview(generated_code: str, git_owner: str, git_repo: str, git_branch: str, git_user: str, languages: str) -> str`
 Provides code review for the generated code.
 
-### 3. `codereview_full(git_diff: str, git_owner: str, git_repo: str, git_branch: str, git_user: str) -> str`
+### 2. Full Code Review
+`codereview_full(git_diff: str, git_owner: str, git_repo: str, git_branch: str, git_user: str) -> str`
 Provides a comprehensive code review based on git diff output.
 
-### 4. `cortex_plan(query: str, git_owner: str, git_repo: str, git_branch: str) -> str`
-Generates a detailed implementation plan for AI Agent.
+### 1. Cat Fact
+`cat_fact() -> str`
+Returns a random cat fact.
 
-### 5. `generate_pull_request(source_branch: str, current_branch: str, git_owner: str, git_repo: str, git_branch: str, git_user: str) -> dict`
-Creates a pull request with auto-generated title and description.
 ---
 
 ## License
