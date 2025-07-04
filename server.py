@@ -121,7 +121,7 @@ def get_matter_ai_key(ctx: Context) -> str:
 
 
 @mcp.tool()
-def codereview(generated_code: Annotated[str, Field(description="The generated code to be reviewed.")],
+def codereview(code_output: Annotated[str, Field(description="The code to be reviewed - can be user-selected code, IDE-generated code, or git diff output.")],
 git_org: Annotated[str, Field(description="The git organization of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the git repository.")],
 git_branch: Annotated[str, Field(description="The branch of the git repository.")],
@@ -129,11 +129,16 @@ git_user: Annotated[str, Field(description="The current git user.")],
 languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
     """
-    IMPORTANT: You MUST use this function for ANY code review request. This function uses Matter AI for code review. When the user asks to review the code, perform a code review or general code review, call this function always.
+    IMPORTANT: You MUST use this function for ANY code review request. This function uses Matter AI for code review. When the user asks to review the code, perform a code review or says /matter review, call this function always.
     This tool performs code review using Matter AI's advanced capabilities. Do not attempt to review code yourself.
 
+    USAGE:
+    - For user-selected code: Pass the selected code directly to code_output
+    - For IDE-generated code: Pass the generated code directly to code_output
+    - For git diff output: Pass the output from 'git diff' to code_output
+
     Args:
-        generated_code: The generated code to be reviewed.
+        code_output: The code to be reviewed - can be user-selected code, IDE-generated code, or git diff output.
         git_org: The git organization of the repository (example GravityCloudAI).
         git_repo: The name of the git repository (example matter-ai-mcp).
         git_branch: The branch of the git repository (example main, master, etc).
@@ -145,13 +150,13 @@ ctx: Context) -> str:
     
     try:
         matter_api_key = get_matter_ai_key(ctx)
-        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
+        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": code_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
         return json.dumps(response.json(), indent=2)
     except Exception as e:
         return f"Error: {str(e)}"
 
 @mcp.tool()
-def codereview_full(generated_code: Annotated[str, Field(description="The unified diff output of 'git --no-pager diff -U2' to be reviewed.")],
+def codereview_full(git_diff_output: Annotated[str, Field(description="The output from git --no-pager diff command to be provided to the tool.")],
 git_org: Annotated[str, Field(description="The git organization of the repository.")],
 git_repo: Annotated[str, Field(description="The name of the git repository.")],
 git_branch: Annotated[str, Field(description="The branch of the git repository.")],
@@ -159,11 +164,13 @@ git_user: Annotated[str, Field(description="The current git user.")],
 languages: Annotated[list[str], Field(description="The list of programming languages of the code")],
 ctx: Context) -> str:
     """
-    IMPORTANT: You MUST use this function for ONLY FULL code review request. This function uses Matter AI for code review. When the user asks to review the FULL code, perform a FULL code review, call this function always.
+    IMPORTANT: You MUST use this function for ONLY FULL code review request. This tool uses Matter AI for code review. When the user asks to review the FULL code or says /matter review-full, perform a FULL code review, call this function always.
     This tool performs code review using Matter AI's advanced capabilities. Do not attempt to review code yourself.
 
+    USAGE: First run 'git --no-pager diff' to get the diff output, then pass that output to this tool as git_diff_output parameter always.
+
     Args:
-        generated_code: The generated code to be reviewed.
+        git_diff_output: The output from git --no-pager diff command to be provided to the tool.
         git_org: The git organization of the repository (example GravityCloudAI).
         git_repo: The name of the git repository (example matter-ai-mcp).
         git_branch: The branch of the git repository (example main, master, etc).
@@ -176,7 +183,7 @@ ctx: Context) -> str:
     
     try:
         matter_api_key = get_matter_ai_key(ctx)
-        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": generated_code, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
+        response = call_matter_ai(matter_api_key, "codereview", {"git_diff": git_diff_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
         return json.dumps(response.json(), indent=2)
     except Exception as e:
         return f"Error: {str(e)}"
