@@ -92,34 +92,6 @@ def get_matter_ai_key(ctx: Context) -> str:
 
     return matter_api_key
 
-# @mcp.tool()
-# def cortex_plan(query: Annotated[str, Field(description="The query to be answered")],
-# git_org: Annotated[str, Field(description="The owner of the repository.")],
-# git_repo: Annotated[str, Field(description="The name of the repository.")],
-# git_branch: Annotated[str, Field(description="The branch of the repository.")],
-# ctx: Context) -> str:
-#     """
-#     Returns a detailed implementation plan as a string for AI Agent.
-#     If you are asked to generate a plan OR cortex plan, call this function.
-#     Args:
-#         query: The query to be answered.
-#         git_org: The owner of the repository.
-#         git_repo: The name of the repository.
-#         git_branch: The branch of the repository.
-#     Returns:
-#         The implementation plan for AI Agent.
-#     """
-    
-#     try:
-#         matter_api_key = get_matter_ai_key(ctx)
-
-#         # make the API call to matter ai to get implementation plan
-
-#         return ""
-#     except Exception as e:
-#         return f"Error: {str(e)}"
-
-
 @mcp.tool()
 def codereview(code_output: Annotated[str, Field(description="The code to be reviewed - can be user-selected code, IDE-generated code, or git diff output.")],
 git_org: Annotated[str, Field(description="The git organization of the repository.")],
@@ -133,7 +105,7 @@ ctx: Context) -> str:
     This tool performs code review using Matter AI's advanced capabilities. Do not attempt to review code yourself.
 
     USAGE:
-    - For user-selected code: Pass the selected code directly to code_output
+    - For user-selected code: Pass the code in the context directly to code_output
     - For IDE-generated code: Pass the generated code directly to code_output
     - For git diff output: Pass the output from 'git diff' to code_output
 
@@ -151,7 +123,7 @@ ctx: Context) -> str:
     try:
         matter_api_key = get_matter_ai_key(ctx)
         response = call_matter_ai(matter_api_key, "codereview", {"git_diff": code_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
-        return json.dumps(response.json(), indent=2)
+        return response.text
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -184,7 +156,7 @@ ctx: Context) -> str:
     try:
         matter_api_key = get_matter_ai_key(ctx)
         response = call_matter_ai(matter_api_key, "codereview", {"git_diff": git_diff_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
-        return json.dumps(response.json(), indent=2)
+        return response.text
     except Exception as e:
         return f"Error: {str(e)}"
 
