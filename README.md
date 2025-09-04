@@ -16,12 +16,12 @@
   </p>
   <p>
     <b>
-      Release Code with Confidence. Everytime.
+      AI Super Intelligence for Engineering
     </b>
   </p>
   <p>
 
-![Matter Og Image](https://res.cloudinary.com/dxvbskvxm/image/upload/v1751168720/ph-header_cy8iqj.png)
+![Matter Og Image](https://res.cloudinary.com/dxvbskvxm/image/upload/v1756191766/og-image-matter_s5m5l6.webp)
 
   </p>
 </div>
