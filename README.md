@@ -10,7 +10,7 @@
   <p>
     <h3>
       <b>
-        Matter AI
+        MatterAI
       </b>
     </h3>
   </p>
@@ -119,3 +119,7 @@ The server will be accessible at `http://localhost:9000`.
 
 ## License
 MIT
+
+## Resources:
+- Website: https://matterai.so
+- Docs: https://docs.matterai.so
