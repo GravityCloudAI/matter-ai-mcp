@@ -124,7 +124,10 @@ ctx: Context) -> str:
     try:
         matter_api_key = get_matter_ai_key(ctx)
         response = call_matter_ai(matter_api_key, "codereview", {"git_diff": code_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
-        return response.json()
+        try:
+            return response.json()
+        except ValueError:
+            return response.text
     except Exception as e:
         return f"Error: {str(e)}"
 
