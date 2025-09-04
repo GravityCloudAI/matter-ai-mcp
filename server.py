@@ -66,6 +66,7 @@ mcp = FastMCP(
 )
 
 MATTER_API_ENDPOINT = os.environ.get('MATTER_API_ENDPOINT', 'http://localhost:4064')
+
 def call_matter_ai(matter_api_key: str, type: str, meta: dict):
     
     response = requests.post(
@@ -123,7 +124,7 @@ ctx: Context) -> str:
     try:
         matter_api_key = get_matter_ai_key(ctx)
         response = call_matter_ai(matter_api_key, "codereview", {"git_diff": code_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
-        return response.text
+        return response.json()
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -156,7 +157,7 @@ ctx: Context) -> str:
     try:
         matter_api_key = get_matter_ai_key(ctx)
         response = call_matter_ai(matter_api_key, "codereview", {"git_diff": git_diff_output, "git_owner": git_org, "git_repo": git_repo, "git_branch": git_branch, "git_user": git_user, "languages": languages})
-        return response.text
+        return response.json()
     except Exception as e:
         return f"Error: {str(e)}"
 
