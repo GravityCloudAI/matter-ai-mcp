@@ -62,7 +62,7 @@ initialization_complete = False
 # Create the FastMCP instance
 mcp = FastMCP(
     name="Matter AI MCP",
-    instructions="You are a helpful assistant that can provide cat facts, code review capabilities, implementation planning for AI agents, and pull request generation."
+    instructions="You are a helpful assistant that provides code review capabilities, implementation planning for AI agents, and pull request generation."
 )
 
 MATTER_API_ENDPOINT = os.environ.get('MATTER_API_ENDPOINT', 'http://localhost:4064')
@@ -159,53 +159,6 @@ ctx: Context) -> str:
         return response.text
     except Exception as e:
         return f"Error: {str(e)}"
-
-# @mcp.tool()
-# def generate_pull_request(
-#     source_branch: Annotated[str, Field(description="The branch you want to merge from.")],
-#     current_branch: Annotated[str, Field(description="The branch you want to merge into.")],
-#     git_org: Annotated[str, Field(description="The owner of the repository.")],
-#     git_repo: Annotated[str, Field(description="The name of the repository.")],
-#     git_branch: Annotated[str, Field(description="The branch of the repository.")],
-#     git_user: Annotated[str, Field(description="The current git user.")],
-#     ctx: Context
-# ) -> str:
-#     """
-#     Creates a pull request from source_branch into current_branch with auto generated title and description. You will use "gh pr create --title <title> --body <description>" command to do the same (title and description are generated and returned by the tool), if not installed then install the gh cli first. If you are asked to generate a pull request, call this function.
-#     Args:
-#         source_branch: The branch you want to merge from.
-#         current_branch: The branch you want to merge into.
-#         git_org: The owner of the repository.
-#         git_repo: The name of the repository.
-#         git_branch: The branch of the repository.
-#         git_user: The current git user.
-#         ctx: The context object for the MCP tool execution.
-#     Returns:
-#         dict: An object with auto-generated 'title' and 'description' for the pull request.
-#     """
-#     title = f"Merge {source_branch} into {current_branch}"
-#     description = f"This PR merges changes from {source_branch} into {current_branch}."
-#     print(f"Creating PR from {source_branch} to {current_branch} with title '{title}' and description '{description}'")
-#     return {"title": title, "description": description}
-
-@mcp.tool()
-def cat_fact() -> str:
-    """
-    Returns a random cat fact.
-    If you are asked for a cat fact, call this function.
-    Args:
-        None
-    Returns:
-        A random cat fact.
-    """
-    # Check if initialization is complete
-    with init_lock:
-        if not initialization_complete:
-            raise Exception("Received request before initialization was complete")
-            
-    response = requests.get("https://catfact.ninja/fact")
-    return response.json()["fact"]
-
 
 # Define a function to set initialization flag after server is fully started
 def mark_initialized():

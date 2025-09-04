@@ -16,12 +16,12 @@
   </p>
   <p>
     <b>
-      Release Code with Confidence. Everytime.
+      AI Super Intelligence for Engineering
     </b>
   </p>
   <p>
 
-![Matter Og Image](https://res.cloudinary.com/dxvbskvxm/image/upload/v1751168720/ph-header_cy8iqj.png)
+![Matter Og Image](https://res.cloudinary.com/dxvbskvxm/image/upload/v1756191766/og-image-matter_s5m5l6.webp)
 
   </p>
 </div>
@@ -101,7 +101,21 @@ Provides a comprehensive code review based on git diff output.
 `cat_fact() -> str`
 Returns a random cat fact.
 
----
+## Docker Build and Use
+
+### Building the Docker Image
+
+```bash
+docker build -t matter-ai-mcp .
+```
+
+### Running the Docker Container
+
+```bash
+docker run -p 9000:9000 -e MATTER_API_ENDPOINT=https://api.matterai.so
+```
+
+The server will be accessible at `http://localhost:9000`.
 
 ## License
 MIT
